@@ -6,7 +6,7 @@ const sliderLabel = document.getElementById('slider-label');
 // Stores the zoom level for each image
 const zoomLevels = new Map();
 
-function handleFile(file) {
+function handleFile(file, gallery) {
     if (file.type.startsWith('image/')) {
         const container = document.createElement('div');
         container.className = 'image-container'; // Create a container for the image
@@ -18,19 +18,11 @@ function handleFile(file) {
         reader.onloadend = function () {
             img.src = reader.result; // Set image src to base64
             img.onload = function () {
-                const width = img.naturalWidth;
-                const height = img.naturalHeight;
-                if (width > height) {
-                    rightGallery.appendChild(container);
-                    container.appendChild(img);
-                    adjustGridLayout();
-                } else {
-                    leftGallery.appendChild(container);
-                    container.appendChild(img);
-                    zoomLevels.set(img, 1);
-                }
+                gallery.appendChild(container);
+                container.appendChild(img);
+                zoomLevels.set(img, 1); // Set default zoom level
                 adjustContainer();
-                setupImageZoom();
+                setupImageZoom(); // Set up zoom for new image
             }
         };
         reader.readAsDataURL(file);
@@ -185,6 +177,36 @@ document.addEventListener('drop', function (e) {
 });
 
 // Initialize container sizes based on the default slider value
+function allowDrop(event) {
+    event.preventDefault(); // Prevent default behavior
+}
+
+function dropImage(event) {
+    event.preventDefault();
+    const gallery = event.target; // Get the target gallery
+    if (gallery.classList.contains('gallery')) {
+        const files = event.dataTransfer.files;
+        for (let i = 0; i < files.length; i++) {
+            handleFile(files[i], gallery);
+        }
+    }
+}
+
+document.querySelectorAll('.gallery').forEach(gallery => {
+    gallery.addEventListener('dragover', allowDrop);
+    gallery.addEventListener('drop', dropImage);
+});
+function handleDragStart(event) {
+    event.dataTransfer.setData('text/plain', event.target.src); // Store image src in dataTransfer
+}
+
+function handleDragOver(event) {
+    event.preventDefault(); // Allow drop
+}
+
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('dragstart', handleDragStart);
+});
 
 const dbName = "GalleryDB3";
 const storeName = "images";
