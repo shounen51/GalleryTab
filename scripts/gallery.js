@@ -171,7 +171,6 @@ slider.addEventListener('input', function () {
     updateSliderLabel();
     adjustContainer();
 });
-// Initialize slider label based on default value
 
 document.addEventListener('dragover', function (e) {
     e.preventDefault();
@@ -179,11 +178,7 @@ document.addEventListener('dragover', function (e) {
 
 document.addEventListener('drop', function (e) {
     e.preventDefault();
-    leftGallery.innerHTML = ''; // Clear left gallery
-    rightGallery.innerHTML = ''; // Clear right gallery
-
     const files = e.dataTransfer.files;
-
     for (let i = 0; i < files.length; i++) {
         handleFile(files[i]);
     }
@@ -310,7 +305,37 @@ function restoreImages(imagesData) {
 }
 
 document.getElementById('save-button').addEventListener('click', saveState);
+// 清空畫廊按鈕邏輯
+document.getElementById('clear-gallery-button').addEventListener('click', function() {
+    leftGallery.innerHTML = '';
+    rightGallery.innerHTML = '';
+    zoomLevels.clear();
+    adjustContainer();
+});
+function addImageToGallery(imageSrc) {
+    const img = document.createElement('img');
+    const container = document.createElement('div');
+    container.classList.add('image-container');
+    img.src = imageSrc;  // 設定圖片來源
 
+    img.onload = function () {
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+
+        if (width > height) {
+            rightGallery.appendChild(container);  // 寬大於高，放到右邊
+        } else {
+            leftGallery.appendChild(container);   // 高大於寬，放到左邊
+            zoomLevels.set(img, 1);               // 預設縮放比例為 1
+        }
+
+        setTimeout(() => {
+            adjustContainer();  // 調整容器佈局
+        }, 100); // 延遲調整佈局，確保圖片完全加載
+    };
+
+    container.appendChild(img);
+}
 // Initialize IndexedDB and load previous state when the page loads
 openDB().then(() => {
     loadState();

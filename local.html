@@ -107,9 +107,16 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
-        #save-button:hover {
-            background-color: #e67e22;
+        #clear-gallery-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #f39c12;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -125,6 +132,7 @@
     </div>
     
     <button id="save-button">儲存狀態</button>
+    <button id="clear-gallery-button">清空畫廊</button>
     <script src="scripts/gallery.js" defer></script>
 </body>
 </html>
