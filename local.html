@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>畫廊</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #050924;
+        }
+
+        #gallery-container {
+            display: flex;
+            width: 90%;
+            height: calc(100% - 50px); /* Adjust to leave space for slider */
+            transition: all 0.3s ease;
+            background-color: #050924;
+        }
+
+        #left-gallery {
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+            background-color: #050924;
+            overflow: hidden; /* Prevent scrollbars */
+            transition: width 0.3s ease;
+        }
+
+        #right-gallery {
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+            background-color: #050924;
+            box-sizing: border-box;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        /* Left gallery images */
+        #left-gallery img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease; /* Smooth zoom transition */
+        }
+
+        /* Right gallery images: centered */
+        #right-gallery img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            margin: auto; /* Center the image */
+        }
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Ensure overflow is clipped */
+            position: relative; /* Positioning context for the image */
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-container img {
+            max-width: none; /* Allow the image to grow larger */
+            max-height: none;
+            position: absolute; /* Allow positioning of image */
+            cursor: grab; /* Show grab cursor when hovering over image */
+        }
+        /* Style for the slider container */
+        #slider-container {
+            width: 90%;
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            background-color: #050924;
+        }
+
+        #slider {
+            width: 100%;
+        }
+
+        #slider-label {
+            flex: 0 0 150px;
+            text-align: center;
+            font-size: 16px;
+            color: white;
+        }
+
+        #save-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #f39c12;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #save-button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <div id="gallery-container">
+        <div id="left-gallery"></div>
+        <div id="right-gallery"></div>
+    </div>
+
+    <div id="slider-container">
+        <label id="slider-label" for="slider">80% - 20%</label>
+        <input type="range" id="slider" min="1" max="99" value="80">
+    </div>
+    
+    <button id="save-button">儲存狀態</button>
+    <script src="scripts/gallery.js" defer></script>
+</body>
+</html>
