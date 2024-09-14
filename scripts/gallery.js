@@ -148,6 +148,7 @@ function drag(event) {
         img.style.left = `${parseFloat(img.dataset.startLeft) + dx}px`; // Update position
         img.style.top = `${parseFloat(img.dataset.startTop) + dy}px`; // Update position
     }
+    adjustGridLayout()
 }
 
 // Ensure that dragging does not trigger default behavior
@@ -285,6 +286,7 @@ function loadState() {
             slider.value = savedState.sliderValue;
             restoreImages(savedState.images);
             updateSliderLabel();
+            adjustGridLayout()
             adjustContainer();
         }
     };
