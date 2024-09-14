@@ -69,6 +69,7 @@ function adjustContainer() {
         leftGallery.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
         leftGallery.style.gridTemplateRows = `repeat(2, minmax(${minImageSize}px, auto))`;
     } else {
+        console.log("one row")
         leftGallery.style.gridTemplateColumns = `repeat(${numImages}, 1fr)`;
         leftGallery.style.gridTemplateRows = `repeat(1, minmax(${minImageSize}px, auto))`;
     }
@@ -90,8 +91,8 @@ function adjustContainer() {
 }
 
 function applyZoom(img, zoomLevel) {
-    img.style.transform = `scale(${zoomLevel})`;
     img.style.transformOrigin = 'center'; // Center zoom on the image
+    img.style.transform = `scale(${zoomLevel})`;
 }
 
 function handleZoom(event) {
@@ -171,7 +172,6 @@ slider.addEventListener('input', function () {
     adjustContainer();
 });
 // Initialize slider label based on default value
-updateSliderLabel();
 
 document.addEventListener('dragover', function (e) {
     e.preventDefault();
@@ -190,7 +190,7 @@ document.addEventListener('drop', function (e) {
 });
 
 // Initialize container sizes based on the default slider value
-adjustContainer();
+
 const dbName = "GalleryDB3";
 const storeName = "images";
 let db;
@@ -227,8 +227,8 @@ function saveState() {
         const base64 = img.src; // Base64 data for the image
         const zoomLevel = zoomLevels.get(img) || 1;
         const container = img.parentNode; // Get container of the image
-        const left = container.style.left || 0;
-        const top = container.style.top || 0;
+        const left = img.style.left || 0;
+        const top = img.style.top || 0;
 
         imagesData.push({
             src: base64,
@@ -264,8 +264,9 @@ function loadState() {
         if (results.length > 0) {
             const savedState = results[0];
             slider.value = savedState.sliderValue;
-            adjustContainer();
             restoreImages(savedState.images);
+            updateSliderLabel();
+            adjustContainer();
         }
     };
 
@@ -281,11 +282,11 @@ function restoreImages(imagesData) {
     imagesData.forEach((imageData) => {
         const container = document.createElement('div');
         container.className = 'image-container';
-        container.style.left = imageData.position.left;
-        container.style.top = imageData.position.top;
 
         const img = document.createElement('img');
         img.src = imageData.src; // Use base64 data
+        img.style.left = imageData.position.left;
+        img.style.top = imageData.position.top;
 
         img.onload = function() {
             const width = img.naturalWidth;
@@ -298,9 +299,13 @@ function restoreImages(imagesData) {
                 leftGallery.appendChild(container);
                 container.appendChild(img);
             }
+            zoomLevels.set(img, imageData.zoomLevel);
             applyZoom(img, imageData.zoomLevel);
             setupImageZoom(); // Set up zoom listeners after restoring
         };
+        setTimeout(() => {
+            adjustContainer();  // 調整容器佈局，依據圖片大小
+        }, 50); // 延遲調整佈局，確保圖片完全加載
     });
 }
 
