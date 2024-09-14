@@ -168,13 +168,13 @@ document.addEventListener('dragover', function (e) {
     e.preventDefault();
 });
 
-document.addEventListener('drop', function (e) {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    for (let i = 0; i < files.length; i++) {
-        handleFile(files[i]);
-    }
-});
+// document.addEventListener('drop', function (e) {
+//     e.preventDefault();
+//     const files = e.dataTransfer.files;
+//     for (let i = 0; i < files.length; i++) {
+//         handleFile(files[i]);
+//     }
+// });
 
 // Initialize container sizes based on the default slider value
 function allowDrop(event) {
@@ -183,12 +183,14 @@ function allowDrop(event) {
 
 function dropImage(event) {
     event.preventDefault();
-    const gallery = event.target; // Get the target gallery
-    if (gallery.classList.contains('gallery')) {
-        const files = event.dataTransfer.files;
-        for (let i = 0; i < files.length; i++) {
-            handleFile(files[i], gallery);
-        }
+    let target = event.target; // Get the target gallery
+    while (target && !target.classList.contains('gallery')) {
+        target = target.parentNode;
+    }
+    const files = event.dataTransfer.files;
+
+    for (let i = 0; i < files.length; i++) {
+        handleFile(files[i], target); // 将文件处理函数的目标画廊作为参数传递
     }
 }
 
