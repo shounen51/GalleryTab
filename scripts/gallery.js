@@ -245,14 +245,14 @@ function saveState() {
     [...leftImages, ...rightImages].forEach((img) => {
         const base64 = img.src; // Base64 data for the image
         const zoomLevel = zoomLevels.get(img) || 1;
-        const container = img.parentNode; // Get container of the image
         const left = img.style.left || 0;
         const top = img.style.top || 0;
-
+        const gallery = leftGallery.contains(img) ? 'left' : 'right';
         imagesData.push({
             src: base64,
             zoomLevel: zoomLevel,
-            position: { left, top }
+            position: { left, top },
+            gallery: gallery  // 根據判斷設定為左邊或右邊畫廊
         });
     });
 
@@ -308,16 +308,13 @@ function restoreImages(imagesData) {
         img.style.top = imageData.position.top;
 
         img.onload = function() {
-            const width = img.naturalWidth;
-            const height = img.naturalHeight;
-            if (width > height) {
+            // 根據儲存的 gallery 資訊決定放置到左邊或右邊
+            if (imageData.gallery === 'right') {
                 rightGallery.appendChild(container);
-                container.appendChild(img);
-                adjustGridLayout();
             } else {
                 leftGallery.appendChild(container);
-                container.appendChild(img);
             }
+            container.appendChild(img);
             zoomLevels.set(img, imageData.zoomLevel);
             applyZoom(img, imageData.zoomLevel);
             setupImageZoom(); // Set up zoom listeners after restoring
